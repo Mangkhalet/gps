@@ -3,6 +3,7 @@
   <head>
     <title>Simple Map</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style type="text/css">
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -20,11 +21,29 @@
     </style>
     <script>
       let map;
-
+        setInterval(function(){ initMap() }, 3000);
       function initMap() {
+           $.get( "https://api.thingspeak.com/channels/1329601/feeds.json?results=2", function( data ) {
+        //
+        console.log(data["channel"]["latitude"],data["channel"]["longitude"] )
+        let lat = data["channel"]["latitude"];
+        let lng = data["channel"]["longitude"] ;
+        console.log( {
+          center: { lat: parseFloat(lat), lng: parseFloat(lng) },
+          //center:{lat:14.041712,lng :100.613121},
+          //center: { lat:data["channel"]["latitude"], lng: data["channel"]["longitude"] },
+          zoom: 20,
+        });
         map = new google.maps.Map(document.getElementById("map"), {
-          center: { lat: -34.397, lng: 150.644 },
-          zoom: 8,
+          center: { lat: parseFloat(lat), lng: parseFloat(lng) },
+          //center:{lat:14.041712,lng :100.613121},
+          //center: { lat:data["channel"]["latitude"], lng: data["channel"]["longitude"] },
+          zoom: 20,
+        });
+        const marker = new google.maps.Marker({
+          position:  { lat: parseFloat(lat), lng: parseFloat(lng) },
+          map: map,
+        });
         });
       }
     </script>
@@ -34,8 +53,11 @@
 
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <script
-      src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtqOc6YDZawy5u6Ip4s6d8VaWSiFJkmFQ&callback=initMap&libraries=&v=weekly"
       async
     ></script>
+    <script>
+       
+    </script>
   </body>
 </html>
